@@ -21,3 +21,13 @@ class MSE(LossFunction):
     def derivative(self, y_true, y_pred):
         n = np.size(y_true)
         2*(y_pred - y_true)/n
+
+class CategoricalCrossEntropy(LossFunction):
+    """Erreur d'Entropie Croisée"""
+    def calculate(self, y_true, y_pred):
+        y_pred = np.clip(y_pred, 1e-7, 1 - 1e-7)
+        return -np.mean(np.sum(y_true * np.log(y_pred), axis=-1))
+
+    def derivative(self, y_true, y_pred):
+        y_pred_clipped = np.clip(y_pred, 1e-7, 1 - 1e-7)
+        return -(y_true / y_pred_clipped) / y_true.shape[0]
